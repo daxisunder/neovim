@@ -6,7 +6,7 @@ return {
     { "giuxtaposition/blink-cmp-copilot" },
   },
   opts = {
-    snippets = { preset = "luasnip" },
+    snippets = { preset = "default" },
     completion = {
       menu = { border = "rounded" },
       documentation = { window = { border = "rounded" } },
