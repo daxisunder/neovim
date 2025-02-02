@@ -1,7 +1,8 @@
 # neovim
 NeoVim config based off of LazyVim
 
-![swappy-20241223-221746](https://github.com/user-attachments/assets/4cedb606-2abb-416c-bbb8-b90b13129f21)
+![swappy-20250202-092117](https://github.com/user-attachments/assets/82613b2a-ae35-4301-9eec-d75b48cba8a0)
+
 
 
 
