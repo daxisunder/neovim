@@ -3,11 +3,9 @@
 -- Add any additional options here
 
 local opt = vim.opt
+local g = vim.g
 
-opt.startofline = true
 opt.cursorcolumn = true
-opt.scrolloff = 8
-opt.sidescrolloff = 8
 opt.list = true
 opt.listchars = {
   tab = "󱗽·",
@@ -17,3 +15,7 @@ opt.listchars = {
   conceal = "󰇙",
   nbsp = "󱥸",
 }
+opt.startofline = true
+opt.scrolloff = 8
+opt.sidescrolloff = 8
+g.loaded_perl_provider = 0
