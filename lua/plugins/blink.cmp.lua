@@ -27,7 +27,7 @@ return {
     signature = {
       enabled = true,
       window = {
-        show_documentation = false,
+        show_documentation = true,
       },
     },
     fuzzy = { implementation = "prefer_rust_with_warning" },
