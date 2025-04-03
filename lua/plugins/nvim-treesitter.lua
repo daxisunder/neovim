@@ -12,7 +12,6 @@ return {
       "lua",
       "markdown",
       "markdown_inline",
-      "org",
       "php",
       "python",
       "query",
