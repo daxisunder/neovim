@@ -12,12 +12,14 @@ return {
       "lua",
       "markdown",
       "markdown_inline",
+      "org",
       "php",
       "python",
       "query",
       "rasi",
       "regex",
       "ruby",
+      "rust",
       "scss",
       "toml",
       "tsx",
@@ -30,4 +32,11 @@ return {
   vim.filetype.add({
     pattern = { [".*/hypr/.*%.conf"] = "hyprlang" },
   }),
+  highlight = {
+    enable = true,
+  },
+  additional_vim_regex_highlighting = { enable = true },
+  indent = {
+    enable = true,
+  },
 }
