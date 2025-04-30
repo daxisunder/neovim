@@ -12,7 +12,7 @@ return {
         c.bg_dark1 = "#1a1b26"
         c.bg_float = "#000000"
         c.bg_sidebar = "#000000"
-        c.bg_statusline = "#000000"
+        c.bg_statusline = "#1a1b26"
         c.bg_popup = "#000000"
         c.black = "#000000"
         c.terminal_black = "#000000"
@@ -37,7 +37,7 @@ return {
       end,
       on_highlights = function(hl, c)
         c.bg = "#000000"
-        c.bg_dark1 = "#414868"
+        c.bg_dark1 = "#1a1b26"
         hl.FloatBorder = {
           bg = c.bg,
           fg = c.bg_dark1,

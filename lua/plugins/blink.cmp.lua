@@ -15,6 +15,9 @@ return {
   lazy = true,
   event = "InsertEnter",
   opts = {
+    keymap = {
+      preset = "enter", -- default, enter, super-tab or none
+    },
     completion = {
       menu = {
         auto_show = true,
@@ -37,20 +40,16 @@ return {
         show_without_selection = true,
       },
       keyword = { range = "full" },
-      accept = {
-        auto_brackets = { enabled = true },
-      },
-      list = {
-        selection = { preselect = false, auto_insert = true },
-      },
+      accept = { auto_brackets = { enabled = true } },
+      list = { selection = { preselect = false, auto_insert = true } },
     },
     signature = {
       enabled = true,
       trigger = {
-        enabled = false,
-        show_on_keyword = true,
+        enabled = true,
+        show_on_keyword = false,
         show_on_trigger_character = true,
-        show_on_insert = true,
+        show_on_insert = false,
         show_on_insert_on_trigger_character = true,
       },
       window = {
@@ -60,6 +59,7 @@ return {
       },
     },
     cmdline = {
+      keymap = { preset = "inherit" },
       enabled = true,
       sources = function()
         local type = vim.fn.getcmdtype()
@@ -74,9 +74,16 @@ return {
         return {}
       end,
       completion = {
-        menu = {
-          auto_show = true,
+        list = {
+          selection = {
+            -- When `true`, will automatically select the first item in the completion list
+            preselect = true,
+            -- When `true`, inserts the completion item automatically when selecting it
+            auto_insert = true,
+          },
         },
+        menu = { auto_show = true },
+        ghost_text = { enabled = true },
       },
     },
     fuzzy = { implementation = "prefer_rust_with_warning" },
