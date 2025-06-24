@@ -3,6 +3,8 @@
 -- Add any additional autocmds here
 
 local autocmd = vim.api.nvim_create_autocmd
+local Snacks = require("snacks")
+local progress = vim.defaulttable()
 
 -- Hyprlang LSP
 autocmd({ "BufEnter", "BufWinEnter" }, {
@@ -38,6 +40,15 @@ autocmd("User", {
   end,
 })
 
+-- Line numbers mini.files
+autocmd("User", {
+  pattern = "MiniFilesWindowUpdate",
+  callback = function(args)
+    vim.wo[args.data.win_id].number = false
+    vim.wo[args.data.win_id].relativenumber = true
+  end,
+})
+
 -- Disable auto-commenting new lines
 autocmd("FileType", {
   pattern = "*",
@@ -49,22 +60,51 @@ autocmd("FileType", {
 
 -- Set ltex LSP to attach to org files
 autocmd({ "BufRead", "BufNewFile" }, {
-  pattern = "*org",
+  pattern = "*.org",
   callback = function()
     vim.bo.filetype = "org"
   end,
 })
 
--- cmdline messages
-autocmd({ "CmdlineEnter" }, {
-  callback = function()
-    vim.opt.messagesopt = "hit-enter,history:1000"
-    vim.api.nvim_create_autocmd({ "CursorHold", "CursorMoved" }, {
-      callback = function()
-        vim.opt.messagesopt = "wait:500,history:1000"
+-- lsp progress
+vim.api.nvim_create_autocmd("LspProgress", {
+  ---@param ev {data: {client_id: integer, params: lsp.ProgressParams}}
+  callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    local value = ev.data.params.value --[[@as {percentage?: number, title?: string, message?: string, kind: "begin" | "report" | "end"}]]
+    if not client or type(value) ~= "table" then
+      return
+    end
+    local p = progress[client.id]
+
+    for i = 1, #p + 1 do
+      if i == #p + 1 or p[i].token == ev.data.params.token then
+        p[i] = {
+          token = ev.data.params.token,
+          msg = ("[%3d%%] %s%s"):format(
+            value.kind == "end" and 100 or value.percentage or 100,
+            value.title or "",
+            value.message and (" **%s**"):format(value.message) or ""
+          ),
+          done = value.kind == "end",
+        }
+        break
+      end
+    end
+
+    local msg = {} ---@type string[]
+    progress[client.id] = vim.tbl_filter(function(v)
+      return table.insert(msg, v.msg) or not v.done
+    end, p)
+
+    local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
+    vim.notify(table.concat(msg, "\n"), "info", {
+      id = "lsp_progress",
+      title = client.name,
+      opts = function(notif)
+        notif.icon = #progress[client.id] == 0 and " "
+          or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
       end,
-      once = true,
     })
   end,
-  desc = "Only show Cmdline message when triggered",
 })

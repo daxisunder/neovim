@@ -3,7 +3,7 @@
 -- Add any additional keymaps here
 
 local map = vim.keymap.set
-local harpoon = require("harpoon")
+local Snacks = require("snacks")
 
 -- mini.pick
 map("n", "<leader>fP", ":Pick", { desc = "Open mini.pick" })
@@ -66,12 +66,61 @@ map({ "n", "x" }, "<leader>gY", function()
   })
 end, { desc = "Git Browse (copy)" })
 
--- harpoon
-map("n", "<leader>h", function()
-  require("harpoon").ui:toggle_quick_menu(harpoon:list(), {
-    ui_max_width = 80, -- Maximum menu width
-    ui_min_width = 40, -- Minimum menu width
-    border = "rounded", -- Window border style
-    title = " Harpoon Menu ", -- Custom window title
-  })
-end, { desc = "Harpoon Menu" })
+-- smart-translate
+map({ "n", "v" }, "<leader>t", ":Translate<CR>", { desc = "Translate Text Under Cursor" })
+
+-- "<leader>'{char}" opens file containing mark upper{char}
+map("n", "<leader>'", function()
+  local char = vim.fn.getcharstr(-1)
+  if char == "\27" then
+    return -- got <esc>
+  end
+  local m = vim.api.nvim_get_mark(char:upper(), {})
+  if m[4] ~= "" then
+    vim.cmd.edit(m[4])
+  end
+end, { desc = "Open file containing mark" })
+
+-- quickfix list
+map("n", "<leader>xd", function()
+  local diagnostics = vim.diagnostic.get(0)
+  local qflist = {}
+  for _, diagnostic in ipairs(diagnostics) do
+    table.insert(qflist, {
+      bufnr = diagnostic.bufnr,
+      lnum = diagnostic.lnum + 1,
+      col = diagnostic.col + 1,
+      text = diagnostic.message,
+      type = diagnostic.severity == vim.diagnostic.severity.ERROR and "E" or "W",
+    })
+  end
+  vim.fn.setqflist(qflist)
+end, { desc = "Send Diaagnostics To QF List" })
+
+-- location list
+map("v", "<leader>xl", function()
+  local start_line = vim.fn.line("'<")
+  local end_line = vim.fn.line("'>")
+  local lines = vim.fn.getline(start_line, end_line)
+  if type(lines) == "string" then
+    lines = { lines }
+  end
+  local loclist = {}
+  for i, line in ipairs(lines) do
+    table.insert(loclist, {
+      filename = vim.fn.bufname("%"),
+      lnum = start_line + i - 1,
+      text = line,
+    })
+  end
+  vim.fn.setloclist(0, loclist)
+  vim.cmd("lopen")
+end, { desc = "Send Lines To Location List" })
+
+-- carbon-now
+map("v", "<leader>cn", ":CarbonNow<CR>", { desc = "Snapshot From Visual Selection" })
+
+-- delete all comments in the current buffer
+map("n", "<leader>cd", function()
+  vim.cmd(("g/^%s/d"):format(vim.fn.escape(vim.fn.substitute(vim.o.commentstring, "%s", "", "g"), "/.*[]~")))
+end, { desc = "Delete Comments in Current Buffer" })
