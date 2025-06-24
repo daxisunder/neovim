@@ -1,9 +1,9 @@
 return {
   "saghen/blink.cmp",
   dependencies = {
-    { "Kaiser-Yang/blink-cmp-dictionary" },
     { "nvim-lua/plenary.nvim" },
-    { "L3MON4D3/LuaSnip", version = "v2.*" },
+    { "Kaiser-Yang/blink-cmp-dictionary" },
+    { "rafamadriz/friendly-snippets" },
     { "fang2hou/blink-copilot" },
     {
       "saghen/blink.compat",
@@ -12,54 +12,155 @@ return {
       version = not vim.g.lazyvim_blink_main and "*",
     },
   },
+  version = "1.*",
   lazy = true,
   event = "InsertEnter",
   opts = {
     keymap = {
-      preset = "enter", -- default, enter, super-tab or none
+      preset = "none", -- default, enter, super-tab or none
+      ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
+      ["<C-e>"] = { "hide", "fallback" },
+      ["<CR>"] = { "accept", "fallback" },
+      ["<Tab>"] = {
+        function(cmp)
+          cmp.show({ providers = { "snippets" } })
+        end,
+        "snippet_forward",
+        "fallback",
+      },
+      ["<S-Tab>"] = { "snippet_backward", "fallback" },
+      ["<Up>"] = { "select_prev", "fallback" },
+      ["<Down>"] = { "select_next", "fallback" },
+      ["<C-p>"] = { "select_prev", "fallback_to_mappings" },
+      ["<C-n>"] = { "select_next", "fallback_to_mappings" },
+      ["<C-b>"] = { "scroll_documentation_up", "fallback" },
+      ["<C-f>"] = { "scroll_documentation_down", "fallback" },
+      ["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
+      ["<A-1>"] = {
+        function(cmp)
+          cmp.accept({ index = 1 })
+        end,
+      },
+      ["<A-2>"] = {
+        function(cmp)
+          cmp.accept({ index = 2 })
+        end,
+      },
+      ["<A-3>"] = {
+        function(cmp)
+          cmp.accept({ index = 3 })
+        end,
+      },
+      ["<A-4>"] = {
+        function(cmp)
+          cmp.accept({ index = 4 })
+        end,
+      },
+      ["<A-5>"] = {
+        function(cmp)
+          cmp.accept({ index = 5 })
+        end,
+      },
+      ["<A-6>"] = {
+        function(cmp)
+          cmp.accept({ index = 6 })
+        end,
+      },
+      ["<A-7>"] = {
+        function(cmp)
+          cmp.accept({ index = 7 })
+        end,
+      },
+      ["<A-8>"] = {
+        function(cmp)
+          cmp.accept({ index = 8 })
+        end,
+      },
     },
     completion = {
       menu = {
         auto_show = true,
+        scrollbar = false,
         border = "rounded",
         draw = {
           columns = {
-            { "kind_icon" },
-            { "label", "label_description", "kind", gap = 1 },
+            { "kind_icon", "label", gap = 1 },
+            { "kind", "item_idx", gap = 1 },
+          },
+          components = {
+            item_idx = {
+              text = function(ctx)
+                return ctx.idx == 10 and "0" or ctx.idx >= 10 and " " or tostring(ctx.idx)
+              end,
+              highlight = "Boolean", -- optional, only if you want to change its color
+            },
+            label = {
+              text = function(ctx)
+                return require("colorful-menu").blink_components_text(ctx)
+              end,
+              highlight = function(ctx)
+                return require("colorful-menu").blink_components_highlight(ctx)
+              end,
+            },
           },
         },
       },
       documentation = {
         auto_show = true,
         auto_show_delay_ms = 200,
-        window = { border = "rounded" },
+        window = {
+          border = "rounded",
+        },
       },
       ghost_text = {
         enabled = true,
-        show_with_menu = true,
+        show_with_menu = false,
+        show_without_menu = true,
+        show_with_selection = false,
         show_without_selection = true,
       },
-      keyword = { range = "full" },
-      accept = { auto_brackets = { enabled = true } },
-      list = { selection = { preselect = false, auto_insert = true } },
+      keyword = {
+        range = "prefix",
+      },
+      accept = {
+        dot_repeat = true,
+        create_undo_point = true,
+        resolve_timeout_ms = 100,
+        auto_brackets = {
+          enabled = true,
+        },
+      },
+      list = {
+        max_items = 20,
+        selection = {
+          preselect = true,
+          auto_insert = false,
+        },
+        cycle = {
+          from_top = true,
+          from_bottom = true,
+        },
+      },
     },
     signature = {
       enabled = true,
       trigger = {
         enabled = true,
-        show_on_keyword = true,
+        show_on_keyword = false,
         show_on_trigger_character = true,
-        show_on_insert = true,
+        show_on_insert = false,
         show_on_insert_on_trigger_character = true,
       },
       window = {
-        border = "single",
+        border = "rounded",
         treesitter_highlighting = true,
-        show_documentation = true,
+        show_documentation = false,
       },
     },
     cmdline = {
-      keymap = { preset = "inherit" },
+      keymap = {
+        preset = "inherit",
+      },
       enabled = true,
       sources = function()
         local type = vim.fn.getcmdtype()
@@ -74,23 +175,78 @@ return {
         return {}
       end,
       completion = {
+        trigger = {
+          show_on_blocked_trigger_characters = {},
+          show_on_x_blocked_trigger_characters = {},
+        },
         list = {
           selection = {
-            -- When `true`, will automatically select the first item in the completion list
             preselect = true,
-            -- When `true`, inserts the completion item automatically when selecting it
-            auto_insert = true,
+            auto_insert = false,
           },
         },
-        menu = { auto_show = true },
-        ghost_text = { enabled = true },
+        menu = {
+          auto_show = true,
+        },
+        ghost_text = {
+          enabled = true,
+        },
       },
     },
-    fuzzy = { implementation = "prefer_rust_with_warning" },
-    snippets = { preset = "luasnip" }, -- or default (friendly-snipets), mini.snippets
+    term = {
+      enabled = true,
+      keymap = { preset = "inherit" }, -- Inherits from top level `keymap` config when not set
+      sources = {},
+      completion = {
+        trigger = {
+          show_on_blocked_trigger_characters = {},
+          show_on_x_blocked_trigger_characters = nil, -- Inherits from top level `completion.trigger.show_on_blocked_trigger_characters` config when not set
+        },
+        -- Inherits from top level config options when not set
+        list = {
+          selection = {
+            preselect = nil,
+            auto_insert = nil,
+          },
+        },
+        menu = {
+          auto_show = nil,
+        },
+        ghost_text = {
+          enabled = nil,
+        },
+      },
+    },
+    fuzzy = {
+      implementation = "prefer_rust_with_warning",
+    },
+    snippets = {
+      preset = "default", -- or luasnip, mini.snippets
+      -- Function to use when expanding LSP provided snippets
+      expand = function(snippet)
+        vim.snippet.expand(snippet)
+      end,
+      -- Function to use when checking if a snippet is active
+      active = function(filter)
+        return vim.snippet.active(filter)
+      end,
+      -- Function to use when jumping between tab stops in a snippet, where direction can be negative or positive
+      jump = function(direction)
+        vim.snippet.jump(direction)
+      end,
+    },
     sources = {
-      compat = {},
-      default = { "lsp", "path", "snippets", "buffer", "copilot", "dictionary", "lazydev", "omni", "cmdline" },
+      default = {
+        "lsp",
+        "path",
+        "snippets",
+        "buffer",
+        "copilot",
+        "dictionary",
+        "lazydev",
+        "omni",
+        "cmdline",
+      },
       providers = {
         lsp = {
           name = "LSP",
@@ -104,7 +260,7 @@ return {
           transform_items = nil, -- Function to transform the items before they're returned
           should_show_items = true, -- Whether or not to show the items
           max_items = nil, -- Maximum number of items to display in the menu
-          min_keyword_length = 0, -- Minimum number of characters in the keyword to trigger the provider
+          min_keyword_length = 2, -- Minimum number of characters in the keyword to trigger the provider
           -- If this provider returns 0 items, it will fallback to these providers.
           -- If multiple providers fallback to the same provider, all the providers must return 0 items for it to fallback
           fallbacks = {},
@@ -121,7 +277,7 @@ return {
             get_cwd = function(context)
               return vim.fn.expand(("#%d:p:h"):format(context.bufnr))
             end,
-            show_hidden_files_by_default = false,
+            show_hidden_files_by_default = true,
           },
         },
         snippets = {
@@ -207,6 +363,7 @@ return {
           module = "blink.cmp.sources.cmdline",
         },
       },
+      compat = {},
     },
   },
   opts_extend = { "sources.completion.enabled_providers", "sources.compat", "sources.default" },

@@ -14,6 +14,10 @@ return {
     popupmenu = {
       enabled = true,
     },
+    redirect = {
+      view = "notify",
+      filter = { event = "msg_show" },
+    },
     commands = {
       enabled = true,
       view = "cmdline",
@@ -25,6 +29,10 @@ return {
         format = "%s",
       },
     },
+    confirm = {
+      enabled = true,
+      view = "notify",
+    },
     notify = {
       enabled = true,
       view = "notify",
@@ -35,7 +43,7 @@ return {
         view = "mini",
       },
       message = {
-        view = "mini",
+        view = "notify",
       },
       -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
       override = {
@@ -43,14 +51,13 @@ return {
         ["vim.lsp.util.stylize_markdown"] = true,
         ["cmp.entry.get_documentation"] = true,
       },
-      view = "mini",
     },
     presets = {
       bottom_search = true, -- use a classic bottom cmdline for search
       command_palette = true, -- use a floating command palette
       long_message_to_split = true, -- long messages will be sent to a split
       lsp_doc_border = true, -- add a border to hover docs and signature help
-      inc_rename = false, -- use a popup for renaming
+      inc_rename = true, -- use a popup for renaming
     },
   },
 }

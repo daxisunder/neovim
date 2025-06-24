@@ -2,15 +2,32 @@ local util = require("lspconfig.util")
 local lspconfig = require("lspconfig")
 local capabilities = require("blink.cmp").get_lsp_capabilities(vim.lsp.protocol.make_client_capabilities())
 capabilities.textDocument.completion.completionItem.snippetSupport = true
+local on_attach = ...
 
 return {
   "neovim/nvim-lspconfig",
-  dependencies = { "saghen/blink.cmp" },
-  event = "VeryLazy",
+  dependencies = {
+    "saghen/blink.cmp",
+    "mason.nvim",
+    { "williamboman/mason-lspconfig.nvim", config = function() end },
+    {
+      "folke/lazydev.nvim",
+      ft = "lua", -- only load on lua files
+      opts = {
+        library = {
+          -- See the configuration section for more details
+          -- Load luvit types when the `vim.uv` word is found
+          { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+        },
+      },
+    },
+  },
+  event = "LazyFile",
   opts = {
     servers = {
       lspconfig.asm_lsp.setup({
         capabilities = capabilities,
+        on_attach = on_attach,
         cmd = { "asm-lsp" },
         filetypes = { "asm", "vmasm" },
         single_file_support = true,
@@ -20,6 +37,7 @@ return {
       }),
       lspconfig.jsonls.setup({
         capabilities = capabilities,
+        on_attach = on_attach,
         cmd = { "vscode-json-language-server", "--stdio" },
         filetypes = { "json", "jsonc" },
         root_dir = function(fname)
@@ -32,6 +50,7 @@ return {
       }),
       lspconfig.ruby_lsp.setup({
         capabilities = capabilities,
+        on_attach = on_attach,
         cmd = { "ruby-lsp" },
         filetypes = { "ruby", "eruby" },
         root_dir = util.root_pattern("Gemfile", ".git"),
@@ -42,12 +61,14 @@ return {
       }),
       lspconfig.rubocop.setup({
         capabilities = capabilities,
+        on_attach = on_attach,
         cmd = { "rubocop", "--lsp" },
         filetypes = { "ruby" },
         root_dir = util.root_pattern("Gemfile", ".git"),
       }),
       lspconfig.phpactor.setup({
         capabilities = capabilities,
+        on_attach = on_attach,
         cmd = { "phpactor", "language-server" },
         filetypes = { "php" },
         root_dir = function(pattern)
@@ -59,6 +80,7 @@ return {
       }),
       lspconfig.perlls.setup({
         capabilities = capabilities,
+        on_attach = on_attach,
         cmd = {
           "perl",
           "-MPerl::LanguageServer",
@@ -84,6 +106,7 @@ return {
       }),
       lspconfig.hyprls.setup({
         capabilities = capabilities,
+        on_attach = on_attach,
         cmd = { "hyprls", "--stdio" },
         filetypes = { "hyprlang" },
         root_dir = function(fname)
@@ -112,6 +135,7 @@ return {
       -- }),
       lspconfig.textlsp.setup({
         capabilities = capabilities,
+        on_attach = on_attach,
         cmd = { "textlsp" },
         filetypes = { "text", "tex", "org", "markdown" },
         root_dir = function(fname)
@@ -156,6 +180,7 @@ return {
       }),
       lspconfig.lua_ls.setup({
         capabilities = capabilities,
+        on_attach = on_attach,
         cmd = { "lua-language-server" },
         filetypes = { "lua" },
         log_level = 2,
@@ -197,6 +222,7 @@ return {
       }),
       lspconfig.harper_ls.setup({
         capabilities = capabilities,
+        on_attach = on_attach,
         enabled = true,
         filetypes = {
           "c",
@@ -256,6 +282,7 @@ return {
       }),
       lspconfig.bashls.setup({
         capabilities = capabilities,
+        on_attach = on_attach,
         cmd = { "bash-language-server", "start" },
         settings = {
           bashIde = {
@@ -270,6 +297,7 @@ return {
       }),
       lspconfig.cssls.setup({
         capabilities = capabilities,
+        on_attach = on_attach,
         cmd = { "vscode-css-language-server", "--stdio" },
         filetypes = { "css", "scss", "less" },
         init_options = { provideFormatter = true }, -- needed to enable formatting capabilities
@@ -283,6 +311,7 @@ return {
       }),
       lspconfig.css_variables.setup({
         capabilities = capabilities,
+        on_attach = on_attach,
         cmd = { "css-variables-language-server", "--stdio" },
         filetypes = { "css", "scss", "less" },
         root_dir = util.root_pattern("package.json", ".git"),
@@ -308,8 +337,134 @@ return {
           },
         },
       }),
-      require("lspconfig").wasm_language_tools.setup({
+      lspconfig.cssmodules_ls.setup({
         capabilities = capabilities,
+        on_attach = on_attach,
+        cmd = { "cssmodules-language-server" },
+        filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+        root_markers = { "package.json" },
+        init_options = {
+          camelCase = "dashes",
+        },
+      }),
+      lspconfig.tailwindcss.setup({
+        capabilities = capabilities,
+        on_attach = on_attach,
+        cmd = { "tailwindcss-language-server", "--stdio" },
+        -- filetypes copied and adjusted from tailwindcss-intellisense
+        filetypes = {
+          -- html
+          "aspnetcorerazor",
+          "astro",
+          "astro-markdown",
+          "blade",
+          "clojure",
+          "django-html",
+          "htmldjango",
+          "edge",
+          "eelixir", -- vim ft
+          "elixir",
+          "ejs",
+          "erb",
+          "eruby", -- vim ft
+          "gohtml",
+          "gohtmltmpl",
+          "haml",
+          "handlebars",
+          "hbs",
+          "html",
+          "htmlangular",
+          "html-eex",
+          "heex",
+          "jade",
+          "leaf",
+          "liquid",
+          "markdown",
+          "mdx",
+          "mustache",
+          "njk",
+          "nunjucks",
+          "php",
+          "razor",
+          "slim",
+          "twig",
+          -- css
+          "css",
+          "less",
+          "postcss",
+          "sass",
+          "scss",
+          "stylus",
+          "sugarss",
+          -- js
+          "javascript",
+          "javascriptreact",
+          "reason",
+          "rescript",
+          "typescript",
+          "typescriptreact",
+          -- mixed
+          "vue",
+          "svelte",
+          "templ",
+        },
+        settings = {
+          tailwindCSS = {
+            validate = true,
+            lint = {
+              cssConflict = "warning",
+              invalidApply = "error",
+              invalidScreen = "error",
+              invalidVariant = "error",
+              invalidConfigPath = "error",
+              invalidTailwindDirective = "error",
+              recommendedVariantOrder = "warning",
+            },
+            classAttributes = {
+              "class",
+              "className",
+              "class:list",
+              "classList",
+              "ngClass",
+            },
+            includeLanguages = {
+              eelixir = "html-eex",
+              eruby = "erb",
+              templ = "html",
+              htmlangular = "html",
+            },
+          },
+        },
+        on_new_config = function(new_config)
+          if not new_config.settings then
+            new_config.settings = {}
+          end
+          if not new_config.settings.editor then
+            new_config.settings.editor = {}
+          end
+          if not new_config.settings.editor.tabSize then
+            -- set tab size for hover
+            new_config.settings.editor.tabSize = vim.lsp.util.get_effective_tabstop()
+          end
+        end,
+        root_dir = function(fname)
+          local root_file = {
+            "tailwind.config.js",
+            "tailwind.config.cjs",
+            "tailwind.config.mjs",
+            "tailwind.config.ts",
+            "postcss.config.js",
+            "postcss.config.cjs",
+            "postcss.config.mjs",
+            "postcss.config.ts",
+          }
+          root_file = util.insert_package_json(root_file, "tailwindcss", fname)
+          return util.root_pattern(unpack(root_file))(fname)
+        end,
+      }),
+      lspconfig.wasm_language_tools.setup({
+        capabilities = capabilities,
+        on_attach = on_attach,
         cmd = { "wat_server" },
         filetypes = { "wat" },
         single_file_support = true,

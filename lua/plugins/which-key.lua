@@ -11,9 +11,9 @@ return {
       -- col = 0,
       -- row = math.huge,
       border = "rounded", -- none, single, double, shadow
-      padding = { 0, 0 }, -- extra window padding [top/bottom, right/left]
+      padding = { 1, 0 }, -- extra window padding [top/bottom, right/left]
       title = true,
-      title_pos = "center",
+      title_pos = "left",
       zindex = 1000,
       -- Additional vim.wo and vim.bo options
       bo = {},
@@ -25,8 +25,14 @@ return {
       width = {
         -- min and max width of the columns
         min = 25,
+        max = 45,
       },
       spacing = 3, -- spacing between columns
+    },
+    spec = {
+      mode = { "n", "v" },
+      { "<leader>n", group = "org-roam", icon = { icon = " ", color = "green" } },
+      { "<leader>o", group = "orgmode", icon = { icon = " ", color = "green" } },
     },
   },
   keys = {

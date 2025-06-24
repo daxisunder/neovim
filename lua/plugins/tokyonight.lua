@@ -11,9 +11,10 @@ return {
         c.bg_dark = "#000000"
         c.bg_dark1 = "#1a1b26"
         c.bg_float = "#000000"
+        c.bg_popup = "#000000"
         c.bg_sidebar = "#000000"
         c.bg_statusline = "#1a1b26"
-        c.bg_popup = "#000000"
+        c.bg_visual = "#1a1b26"
         c.black = "#000000"
         c.terminal_black = "#000000"
         c.terminal = {
@@ -38,10 +39,6 @@ return {
       on_highlights = function(hl, c)
         c.bg = "#000000"
         c.bg_dark1 = "#1a1b26"
-        hl.FloatBorder = {
-          bg = c.bg,
-          fg = c.bg_dark1,
-        }
         hl.BlinkCmpDocBorder = {
           bg = c.bg,
           fg = c.bg_dark1,
@@ -50,7 +47,17 @@ return {
           bg = c.bg,
           fg = c.bg_dark1,
         }
-        hl.SignatureHelpBorder = {
+        hl.BlinkCmpSignatureHelpBorder = {
+          bg = c.bg,
+          fg = c.bg_dark1,
+        }
+        hl.CursorColumn = {
+          bg = c.bg_dark1,
+        }
+        hl.CursorLine = {
+          bg = c.bg_dark1,
+        }
+        hl.FloatBorder = {
           bg = c.bg,
           fg = c.bg_dark1,
         }
@@ -89,6 +96,22 @@ return {
         hl.NeoTestBorder = {
           bg = c.bg,
           fg = c.bg_dark1,
+        }
+        hl.PmenuSel = {
+          bg = "#1a1b26",
+        }
+        hl.PmenuThumb = {
+          bg = "#1a1b26",
+        }
+        hl.SnacksPickerInputBorder = {
+          bg = c.bg,
+          fg = c.bg_dark1,
+        }
+        hl.TabLine = {
+          bg = c.bg_dark1,
+        }
+        hl.TreesitterContext = {
+          bg = c.bg_dark1,
         }
         hl.WinSeparator = {
           bold = true,
