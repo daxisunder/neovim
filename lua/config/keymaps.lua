@@ -2,6 +2,8 @@
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 
+---@diagnostic disable: undefined-global
+
 local map = vim.keymap.set
 local Snacks = require("snacks")
 
@@ -30,7 +32,7 @@ map("n", "<leader>fi", function()
       require("img-clip").paste_image({}, "./" .. item.file)
     end,
   })
-end, { desc = "Find image to paste" })
+end, { desc = "Find Image To Paste" })
 
 -- lazygit
 if vim.fn.executable("lazygit") == 1 then
@@ -79,7 +81,7 @@ map("n", "<leader>'", function()
   if m[4] ~= "" then
     vim.cmd.edit(m[4])
   end
-end, { desc = "Open file containing mark" })
+end, { desc = "Open File Containing Mark" })
 
 -- quickfix list
 map("n", "<leader>xd", function()
@@ -95,7 +97,7 @@ map("n", "<leader>xd", function()
     })
   end
   vim.fn.setqflist(qflist)
-end, { desc = "Send Diaagnostics To QF List" })
+end, { desc = "Send Diagnostics To QF List" })
 
 -- location list
 map("v", "<leader>xl", function()
@@ -124,3 +126,6 @@ map("v", "<leader>cn", ":CarbonNow<CR>", { desc = "Snapshot From Visual Selectio
 map("n", "<leader>cd", function()
   vim.cmd(("g/^%s/d"):format(vim.fn.escape(vim.fn.substitute(vim.o.commentstring, "%s", "", "g"), "/.*[]~")))
 end, { desc = "Delete Comments in Current Buffer" })
+
+-- alias "find & replace all" to leader + r
+map("n", "<leader>r", ":%s///gI<Left><Left><Left><Left>", { desc = "Find & Replace All" })

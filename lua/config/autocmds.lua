@@ -40,11 +40,11 @@ autocmd("User", {
   end,
 })
 
--- Line numbers mini.files
+-- Configure mini.files (line numbers)
 autocmd("User", {
   pattern = "MiniFilesWindowUpdate",
   callback = function(args)
-    vim.wo[args.data.win_id].number = false
+    vim.wo[args.data.win_id].number = true
     vim.wo[args.data.win_id].relativenumber = true
   end,
 })
@@ -58,7 +58,15 @@ autocmd("FileType", {
   desc = "Disable New Line Comment",
 })
 
--- Set ltex LSP to attach to org files
+-- Center scren on InsertEnter
+autocmd("InsertEnter", {
+  callback = function()
+    vim.cmd("normal! zz")
+  end,
+  desc = "Center screen on InsertEnter",
+})
+
+-- Set LSP to recognize org files
 autocmd({ "BufRead", "BufNewFile" }, {
   pattern = "*.org",
   callback = function()
@@ -66,8 +74,27 @@ autocmd({ "BufRead", "BufNewFile" }, {
   end,
 })
 
--- lsp progress
-vim.api.nvim_create_autocmd("LspProgress", {
+-- Set LSP to recognize tex files
+autocmd({ "BufRead", "BufNewFile" }, {
+  pattern = "*.tex",
+  callback = function()
+    vim.bo.filetype = "latex"
+  end,
+})
+
+-- Remove trailing whitespace on save
+autocmd("BufWritePre", {
+  pattern = "*",
+  callback = function()
+    local save_cursor = vim.api.nvim_win_get_cursor(0)
+    vim.cmd([[%s/\s\+$//e]])
+    vim.api.nvim_win_set_cursor(0, save_cursor)
+  end,
+  desc = "Remove trailing whitespace on save",
+})
+
+-- LSP progress
+autocmd("LspProgress", {
   ---@param ev {data: {client_id: integer, params: lsp.ProgressParams}}
   callback = function(ev)
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
