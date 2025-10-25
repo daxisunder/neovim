@@ -97,7 +97,7 @@ return {
     explorer = { enabled = true },
     gitbrowse = { enabled = true },
     image = {
-      enabled = false,
+      enabled = true,
       doc = {
         inline = false,
         float = true,
@@ -107,7 +107,6 @@ return {
     },
     indent = { enabled = false },
     input = { enabled = true },
-    layout = { enabled = true },
     lazygit = { enabled = true },
     notifier = {
       enabled = true,
