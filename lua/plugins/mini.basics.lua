@@ -1,7 +1,7 @@
 return {
   "nvim-mini/mini.basics",
   version = false,
-  event = "VeryLazy",
+  event = BufEnter,
   config = function()
     require("mini.basics").setup({
       options = {

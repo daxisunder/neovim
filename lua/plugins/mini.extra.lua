@@ -3,6 +3,6 @@ return {
   version = false,
   event = "VeryLazy",
   config = function()
-    require("mini.extra").setup()
+    require("mini.extra").setup({})
   end,
 }

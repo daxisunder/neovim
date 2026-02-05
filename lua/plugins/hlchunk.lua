@@ -7,7 +7,7 @@ return {
       chunk = {
         enable = true,
         style = {
-          "#1a1b26",
+          "#455a64",
           "#ff899d",
         },
         chars = {
@@ -22,7 +22,7 @@ return {
         },
       },
       line_num = {
-        enable = false,
+        enable = true,
       },
 
       indent = {

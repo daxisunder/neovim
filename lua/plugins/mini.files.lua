@@ -37,12 +37,10 @@ return {
     local _, MiniFiles = pcall(require, "mini.files")
     local gitStatusCache = {}
     local cacheTimeout = 2000 -- Cache timeout in milliseconds
-
     local function isSymlink(path)
       local stat = vim.loop.fs_lstat(path)
       return stat and stat.type == "link"
     end
-
     ---@type table<string, {symbol: string, hlGroup: string}>
     ---@param status string
     ---@return string symbol, string hlGroup
@@ -65,7 +63,6 @@ return {
         ["!!"] = { symbol = "!", hlGroup  = "MiniDiffSignChange"}, -- Ignored files
         -- stylua: ignore end
       }
-
       local result = statusMap[status] or { symbol = "?", hlGroup = "NonText" }
       local gitSymbol = result.symbol
       local gitHlGroup = result.hlGroup
@@ -74,7 +71,6 @@ return {
       local combinedHlGroup = is_symlink and "MiniDiffSignDelete" or gitHlGroup
       return combinedSymbol, combinedHlGroup
     end
-
     ---@param cwd string
     ---@param callback function
     ---@return nil
@@ -87,7 +83,6 @@ return {
       end
       vim.system({ "git", "status", "--ignored", "--porcelain" }, { text = true, cwd = cwd }, on_exit)
     end
-
     ---@param str string|nil
     ---@return string
     local function escapePattern(str)
@@ -96,7 +91,6 @@ return {
       end
       return (str:gsub("([%^%$%(%)%%%.%[%]%*%+%-%?])", "%%%1"))
     end
-
     ---@param buf_id integer
     ---@param gitStatusMap table
     ---@return nil
@@ -108,7 +102,6 @@ return {
         if vim.fn.has("win32") == 1 then
           escapedcwd = escapedcwd:gsub("\\", "/")
         end
-
         for i = 1, nlines do
           local entry = MiniFiles.get_fs_entry(buf_id, i)
           if not entry then
@@ -116,7 +109,6 @@ return {
           end
           local relativePath = entry.path:gsub("^" .. escapedcwd .. "/", "")
           local status = gitStatusMap[relativePath]
-
           if status then
             local is_symlink = isSymlink(entry.path)
             local symbol, hlGroup = mapSymbols(status, is_symlink)
@@ -149,7 +141,6 @@ return {
         end
       end)
     end
-
     ---@param content string
     ---@return table
     local function parseGitStatus(content)
@@ -178,7 +169,6 @@ return {
       end
       return gitStatusMap
     end
-
     ---@param buf_id integer
     ---@return nil
     local function updateGitStatus(buf_id)
@@ -186,7 +176,6 @@ return {
       if not cwd or not vim.fs.root(cwd, ".git") then
         return
       end
-
       local currentTime = os.time()
       if gitStatusCache[cwd] and currentTime - gitStatusCache[cwd].time < cacheTimeout then
         updateMiniWithGit(buf_id, gitStatusCache[cwd].statusMap)
@@ -201,16 +190,13 @@ return {
         end)
       end
     end
-
     ---@return nil
     local function clearCache()
       gitStatusCache = {}
     end
-
     local function augroup(name)
       return vim.api.nvim_create_augroup("MiniFiles_" .. name, { clear = true })
     end
-
     autocmd("User", {
       group = augroup("start"),
       pattern = "MiniFilesExplorerOpen",
@@ -220,7 +206,6 @@ return {
         updateGitStatus(bufnr)
       end,
     })
-
     autocmd("User", {
       group = augroup("close"),
       pattern = "MiniFilesExplorerClose",
@@ -228,7 +213,6 @@ return {
         clearCache()
       end,
     })
-
     autocmd("User", {
       group = augroup("update"),
       pattern = "MiniFilesBufferUpdate",

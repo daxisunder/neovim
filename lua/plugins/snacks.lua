@@ -92,10 +92,18 @@ return {
       easing = "linear",
       fps = 60, -- frames per second. Global setting for all animations
     },
-    bigfile = { enabled = true },
-    dim = { enabled = true },
-    explorer = { enabled = true },
-    gitbrowse = { enabled = true },
+    bigfile = {
+      enabled = true,
+    },
+    dim = {
+      enabled = true,
+    },
+    explorer = {
+      enabled = true,
+    },
+    gitbrowse = {
+      enabled = true,
+    },
     image = {
       enabled = true,
       force = true, -- try displaying the image, even if the terminal does not support it
@@ -109,10 +117,49 @@ return {
         chart = "󰄧 ",
         image = " ",
       },
+      ---@class snacks.image.convert.Config
+      convert = {
+        notify = true, -- show a notification on error
+        ---@type snacks.image.args
+        mermaid = function()
+          local theme = vim.o.background == "light" and "neutral" or "dark"
+          return { "-i", "{src}", "-o", "{file}", "-b", "transparent", "-t", theme, "-s", "{scale}" }
+        end,
+        ---@type table<string,snacks.image.args>
+        magick = {
+          default = { "{src}[0]", "-scale", "1920x1080>" }, -- default for raster images
+          vector = { "-density", 192, "{src}[{page}]" }, -- used by vector images like svg
+          math = { "-density", 192, "{src}[{page}]", "-trim" },
+          pdf = { "-density", 192, "{src}[{page}]", "-background", "white", "-alpha", "remove", "-trim" },
+        },
+      },
     },
-    indent = { enabled = false },
-    input = { enabled = true },
-    lazygit = { enabled = true },
+    indent = {
+      indent = {
+        enabled = false,
+      },
+      scope = {
+        enabled = false,
+        hl = "SnacksIndentScope",
+      },
+      chunk = {
+        enabled = false,
+        hl = "SnacksIndentScope",
+        char = {
+          horizontal = "─",
+          vertical = "│",
+          corner_top = "╭",
+          corner_bottom = "╰",
+          arrow = "",
+        },
+      },
+    },
+    input = {
+      enabled = true,
+    },
+    lazygit = {
+      enabled = true,
+    },
     notifier = {
       enabled = true,
       timeout = 6000,
@@ -168,6 +215,16 @@ return {
             end,
           },
         },
+        gh_issue = {
+          layout = {
+            preset = "ivy",
+          },
+        },
+        gh_pr = {
+          layout = {
+            preset = "ivy",
+          },
+        },
         git_diff = {
           layout = {
             preset = "ivy",
@@ -178,7 +235,22 @@ return {
             preset = "ivy",
           },
         },
+        git_log_file = {
+          layout = {
+            preset = "ivy",
+          },
+        },
         git_log_line = {
+          layout = {
+            preset = "ivy",
+          },
+        },
+        git_stash = {
+          layout = {
+            preset = "ivy",
+          },
+        },
+        git_status = {
           layout = {
             preset = "ivy",
           },
@@ -243,6 +315,11 @@ return {
             preset = "vscode",
           },
         },
+        qflist = {
+          layout = {
+            preset = "ivy",
+          },
+        },
         registers = {
           layout = {
             preset = "vscode",
@@ -259,8 +336,8 @@ return {
           },
         },
         snippets = {
-          layoiut = {
-            preset = "vscode",
+          layout = {
+            preset = "ivy",
           },
           supports_live = false,
           preview = "preview",
@@ -329,17 +406,12 @@ return {
             end
           end,
         },
-        undo = {
-          layout = {
-            preset = "ivy",
-          },
-        },
         todo_comments = {
           layout = {
             preset = "ivy",
           },
         },
-        qflist = {
+        undo = {
           layout = {
             preset = "ivy",
           },
@@ -358,9 +430,15 @@ return {
         },
       },
     },
-    project = { enabled = true },
-    profiler = { enabled = true },
-    quickfile = { enabled = true },
+    project = {
+      enabled = true,
+    },
+    profiler = {
+      enabled = true,
+    },
+    quickfile = {
+      enabled = true,
+    },
     scope = {
       enabled = true,
       keys = {
@@ -399,8 +477,12 @@ return {
         },
       },
     },
-    scratch = { enabled = true },
-    scroll = { enabled = true },
+    scratch = {
+      enabled = true,
+    },
+    scroll = {
+      enabled = true,
+    },
     statuscolumn = {
       enabled = true,
       left = { "mark", "sign" }, -- priority of signs on the left (high to low)
@@ -416,14 +498,14 @@ return {
       refresh = 50, -- refresh at most every 50ms
     },
     styles = {
-      blame_line = {
-        title_pos = "left",
-      },
+      blame_line = {},
       input = {
         relative = "editor",
         col = 1,
         row = -1,
-        title_pos = "left",
+        b = {
+          completion = true,
+        },
       },
       notification = {
         border = "rounded",
@@ -442,8 +524,8 @@ return {
         border = true,
         focusable = false,
         backdrop = false,
-        row = 1,
-        col = -1,
+        row = 0,
+        col = 130,
         -- width/height are automatically set by the image size unless specified below
         width = 80,
       },
@@ -467,8 +549,8 @@ return {
     terminal = {
       win = {
         relative = "editor",
-        position = "float",
-        style = "minimal",
+        position = "bottom",
+        style = "terminal",
         border = "rounded",
       },
     },
@@ -500,7 +582,7 @@ return {
       function()
         Snacks.win({
           file = vim.api.nvim_get_runtime_file("doc/news.txt", false)[1],
-          width = 0.6,
+          width = 0.4,
           height = 0.6,
           wo = {
             spell = false,

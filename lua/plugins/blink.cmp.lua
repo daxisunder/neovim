@@ -172,6 +172,7 @@ return {
     cmdline = {
       keymap = {
         preset = "inherit",
+        ["<CR>"] = { "accept_and_enter", "fallback" },
       },
       enabled = true,
       sources = function()
@@ -233,7 +234,7 @@ return {
       implementation = "prefer_rust_with_warning",
     },
     snippets = {
-      preset = "default", -- or luasnip, mini.snippets
+      preset = "luasnip", -- or luasnip, mini.snippets
       -- Function to use when expanding LSP provided snippets
       expand = function(snippet)
         vim.snippet.expand(snippet)
@@ -406,6 +407,12 @@ return {
         },
         cmdline = {
           module = "blink.cmp.sources.cmdline",
+          min_keyword_length = function(ctx)
+            if ctx.mode == "cmdline" and string.find(ctx.line, " ") == nil then
+              return 3
+            end
+            return 0
+          end,
         },
         calc = {
           name = "Calc",

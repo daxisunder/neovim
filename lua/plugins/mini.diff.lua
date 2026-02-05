@@ -1,6 +1,7 @@
 return {
   "nvim-mini/mini.diff",
-  version = "*",
+  version = false,
+  event = "VeryLazy",
   config = function()
     require("mini.diff").setup({
       view = {
@@ -10,6 +11,7 @@ return {
           change = "o",
           delete = "-",
         },
+        priority = 199,
       },
     })
   end,

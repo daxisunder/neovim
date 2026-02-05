@@ -24,8 +24,19 @@ return {
   },
   event = "LazyFile",
   opts = {
+    inlay_hints = {
+      enabled = false,
+    },
+    codelens = {
+      enabled = true,
+    },
     servers = {
       emmylua_ls = false,
+      texlab = {
+        keys = {
+          { "<Leader>K", "<plug>(vimtex-doc-package)", desc = "Vimtex Docs", silent = true },
+        },
+      },
       lspconfig.asm_lsp.setup({
         capabilities = capabilities,
         on_attach = on_attach,
@@ -41,24 +52,24 @@ return {
         on_attach = on_attach,
         cmd = { "vscode-json-language-server", "--stdio" },
         filetypes = { "json", "jsonc" },
+        single_file_support = true,
         root_dir = function(fname)
           return vim.fs.dirname(vim.fs.find(".git", { path = fname, upward = true })[1])
         end,
         init_options = {
           provideFormatter = true,
         },
-        single_file_support = true,
       }),
       lspconfig.ruby_lsp.setup({
         capabilities = capabilities,
         on_attach = on_attach,
         cmd = { "ruby-lsp" },
         filetypes = { "ruby", "eruby" },
+        single_file_support = true,
         root_dir = util.root_pattern("Gemfile", ".git"),
         init_options = {
           formatter = "auto",
         },
-        single_file_support = true,
       }),
       lspconfig.rubocop.setup({
         capabilities = capabilities,
@@ -79,51 +90,51 @@ return {
           return util.path.is_descendant(cwd, root) and cwd or root
         end,
       }),
-      lspconfig.perlls.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-        cmd = {
-          "perl",
-          "-MPerl::LanguageServer",
-          "-e",
-          "Perl::LanguageServer::run",
-          "--",
-          "--port 13603",
-          "--nostdio 0",
-        },
-        settings = {
-          perl = {
-            perlCmd = "perl",
-            perlInc = " ",
-            fileFilter = { ".pm", ".pl" },
-            ignoreDirs = ".git",
-          },
-        },
-        filetypes = { "perl" },
-        root_dir = function(fname)
-          return vim.fs.dirname(vim.fs.find(".git", { path = fname, upward = true })[1])
-        end,
-        single_file_support = true,
-      }),
+      -- lspconfig.perlls.setup({
+      --   capabilities = capabilities,
+      --   on_attach = on_attach,
+      --   cmd = {
+      --     "perl",
+      --     "-MPerl::LanguageServer",
+      --     "-e",
+      --     "Perl::LanguageServer::run",
+      --     "--",
+      --     "--port 13603",
+      --     "--nostdio 0",
+      --   },
+      --   settings = {
+      --     perl = {
+      --       perlCmd = "perl",
+      --       perlInc = " ",
+      --       fileFilter = { ".pm", ".pl" },
+      --       ignoreDirs = ".git",
+      --     },
+      --   },
+      --   filetypes = { "perl" },
+      --   single_file_support = true,
+      --   root_dir = function(fname)
+      --     return vim.fs.dirname(vim.fs.find(".git", { path = fname, upward = true })[1])
+      --   end,
+      -- }),
       lspconfig.hyprls.setup({
         capabilities = capabilities,
         on_attach = on_attach,
         cmd = { "hyprls", "--stdio" },
         filetypes = { "hyprlang" },
+        single_file_support = true,
         root_dir = function(fname)
           return vim.fs.dirname(vim.fs.find(".git", { path = fname, upward = true })[1])
         end,
-        single_file_support = true,
       }),
       lspconfig.textlsp.setup({
         capabilities = capabilities,
         on_attach = on_attach,
         cmd = { "textlsp" },
         filetypes = { "text", "tex", "org", "markdown" },
+        single_file_support = true,
         root_dir = function(fname)
           return vim.fs.dirname(vim.fs.find(".git", { path = fname, upward = true })[1])
         end,
-        single_file_support = true,
         settings = {
           textLSP = {
             analysers = {
@@ -304,10 +315,10 @@ return {
           },
         },
         filetypes = { "bash", "sh" },
+        single_file_support = true,
         root_dir = function(fname)
           return vim.fs.dirname(vim.fs.find(".git", { path = fname, upward = true })[1])
         end,
-        single_file_support = true,
       }),
       lspconfig.cssls.setup({
         capabilities = capabilities,
@@ -484,6 +495,22 @@ return {
         single_file_support = true,
         -- `settings` section is optional
         settings = { format = {}, lint = {} },
+      }),
+      lspconfig.nim_langserver.setup({
+        capabilities = capabilities,
+        on_attach = on_attach,
+        cmd = { "nimlangserver" },
+        filetypes = { "nim" },
+        root_dir = function(fname)
+          return util.root_pattern("*.nimble")(fname)
+            or vim.fs.dirname(vim.fs.find(".git", { path = fname, upward = true })[1])
+        end,
+        single_file_support = true,
+        settings = {
+          nim = {
+            nimsuggestPath = vim.fn.expand("~/.nimble/bin/custom_lang_server_build"),
+          },
+        },
       }),
     },
   },

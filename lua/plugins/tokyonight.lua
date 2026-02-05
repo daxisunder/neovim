@@ -44,6 +44,9 @@ return {
           bg = c.bg,
           fg = c.bg_dark1,
         }
+        hl.BlinkCmpGhostText = {
+          fg = c.bg_dark1,
+        }
         hl.BlinkCmpMenuBorder = {
           bg = c.bg,
           fg = c.bg_dark1,
@@ -61,6 +64,9 @@ return {
         hl.FloatBorder = {
           bg = c.bg,
           fg = c.bg_dark1,
+        }
+        hl.Folded = {
+          bg = c.bg,
         }
         hl.FzfLuaBorder = {
           bg = c.bg,
@@ -115,6 +121,13 @@ return {
         }
         hl.PmenuThumb = {
           bg = c.bg_dark1,
+        }
+        hl.SnacksIndent = {
+          fg = c.bg,
+        }
+        hl.SnacksIndentScope = {
+          bg = c.bg,
+          fg = c.cyan,
         }
         hl.SnacksInputBorder = {
           bg = c.bg,
