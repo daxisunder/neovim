@@ -4,18 +4,12 @@
 
 local map = vim.keymap.set
 local Snacks = require("snacks")
-local Luasnip = require("luasnip")
+
+-- search clipboard history
+map({ "n" }, "<leader>sv", ":lua Snacks.picker.cliphist()<CR>", { desc = "Clipboard History" })
 
 -- name a file without writing it out
 map("n", "<leader>F", ":file ", { desc = "File Name (Full Path)" })
-
--- luasnip
-map({ "i", "s" }, "<Tab>", function()
-  Luasnip.jump(1)
-end, { silent = true })
-map({ "i", "s" }, "<S-Tab>", function()
-  Luasnip.jump(-1)
-end, { silent = true })
 
 -- mini.pick
 map({ "n", "v" }, "<leader>Pb", ":Pick buffers<CR>", { desc = "Pick: Buffers" })
@@ -43,7 +37,7 @@ map({ "n", "v" }, "<leader>PhH", ":Pick history<CR>", { desc = "Pick: History" }
 map({ "n", "v" }, "<leader>Phg", ":Pick hl_groups<CR>", { desc = "Pick: Hl Groups" })
 
 -- line diagnostics
-map("n", "<localleader>k", function()
+map("n", "<leader>uK", function()
   vim.diagnostic.config({ virtual_lines = { current_line = true }, virtual_text = false })
   vim.api.nvim_create_autocmd("CursorMoved", {
     group = vim.api.nvim_create_augroup("line-diagnostics", { clear = true }),
@@ -159,6 +153,3 @@ end, { desc = "Delete Comments in Current Buffer" })
 
 -- alias "find & replace all" to leader + r
 map("n", "<leader>r", ":%s///gI<Left><Left><Left><Left>", { desc = "Find & Replace All" })
-
--- change list (noice)
-map("n", "<leader>snc", ":changes<CR>", { desc = "Noice Changes" })

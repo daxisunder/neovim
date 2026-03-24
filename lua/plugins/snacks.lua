@@ -5,9 +5,6 @@ return {
   "folke/snacks.nvim",
   priority = 1000,
   lazy = false,
-  ---@type snacks.Config
-  ---@class snacks.Picker
-  ---@field [string] unknown
   opts = {
     dashboard = {
       width = 90,
@@ -101,21 +98,18 @@ return {
     explorer = {
       enabled = true,
     },
+    gh = {
+      enabled = true,
+    },
     gitbrowse = {
       enabled = true,
     },
     image = {
       enabled = true,
-      force = false, -- try displaying the image, even if the terminal does not support it
+      force = true, -- try displaying the image, even if the terminal does not support it
       doc = {
         inline = false,
         float = true,
-      },
-      cache = vim.fn.stdpath("cache") .. "/snacks/image",
-      icons = {
-        math = "󰪚 ",
-        chart = "󰄧 ",
-        image = " ",
       },
     },
     indent = {
@@ -155,6 +149,11 @@ return {
         autocmds = {
           layout = {
             preset = "ivy",
+          },
+        },
+        cliphist = {
+          layout = {
+            preset = "vscode",
           },
         },
         commands = {
@@ -294,6 +293,16 @@ return {
             preset = "vscode",
           },
         },
+        pickers = {
+          layout = {
+            preset = "ivy",
+          },
+        },
+        picker_layouts = {
+          layout = {
+            preset = "ivy",
+          },
+        },
         projects = {
           layout = {
             preset = "vscode",
@@ -372,7 +381,6 @@ return {
           end,
           confirm = function(picker, item)
             picker:close()
-            --
             local expand = {}
             require("luasnip").available(function(snippet)
               if snippet.trigger == item.trigger then
@@ -396,6 +404,11 @@ return {
           },
         },
         undo = {
+          layout = {
+            preset = "ivy",
+          },
+        },
+        yanky = {
           layout = {
             preset = "ivy",
           },
@@ -508,8 +521,8 @@ return {
         border = true,
         focusable = false,
         backdrop = false,
-        row = 0,
-        col = 130,
+        row = 1,
+        col = -1,
         -- width/height are automatically set by the image size unless specified below
         width = 80,
       },
@@ -535,7 +548,6 @@ return {
         relative = "editor",
         position = "bottom",
         style = "terminal",
-        border = "rounded",
       },
     },
     toggle = {
@@ -549,17 +561,6 @@ return {
     },
   },
   keys = {
-    {
-      "<leader>n",
-      false,
-    },
-    {
-      "<leader>sN",
-      function()
-        Snacks.picker.notifications()
-      end,
-      desc = "Notification History",
-    },
     {
       "<leader>N",
       desc = "Neovim News",
