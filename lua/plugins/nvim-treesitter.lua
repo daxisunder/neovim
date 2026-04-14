@@ -1,20 +1,23 @@
 return {
   "nvim-treesitter/nvim-treesitter",
   branch = "main",
-  version = false, -- last release is way too old and doesn't work on Windows
+  version = false,
   build = function()
     local TS = require("nvim-treesitter")
     if not TS.get_installed then
       LazyVim.error("Please restart Neovim and run `:TSUpdate` to use the `nvim-treesitter` **main** branch.")
       return
     end
-    TS.update(nil, { summary = true })
+    -- make sure we're using the latest treesitter util
+    package.loaded["lazyvim.util.treesitter"] = nil
+    LazyVim.treesitter.build(function()
+      TS.update(nil, { summary = true })
+    end)
   end,
   lazy = vim.fn.argc(-1) == 0, -- load treesitter early when opening a file from the cmdline
   event = { "LazyFile", "VeryLazy" },
   cmd = { "TSUpdate", "TSInstall", "TSLog", "TSUninstall" },
   opts_extend = { "ensure_installed" },
-  ---@class lazyvim.TSConfig: TSConfig
   opts = {
     -- LazyVim config for treesitter
     ensure_installed = {
@@ -55,7 +58,6 @@ return {
       "yaml",
     },
   },
-  ---@param opts lazyvim.TSConfig
   config = function(_, opts)
     local TS = require("nvim-treesitter")
     -- some quick sanity checks
@@ -93,7 +95,9 @@ return {
     vim.api.nvim_create_autocmd("User", {
       pattern = "TSUpdate",
       callback = function()
+        ---@diagnostic disable-next-line: missing-fields
         require("nvim-treesitter.parsers").kitty = {
+          ---@diagnostic disable-next-line: missing-fields
           install_info = {
             url = "https://github.com/OXY2DEV/tree-sitter-kitty",
           },
