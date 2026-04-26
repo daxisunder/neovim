@@ -3,6 +3,7 @@ local lspconfig = require("lspconfig")
 local capabilities = require("blink.cmp").get_lsp_capabilities(vim.lsp.protocol.make_client_capabilities())
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 local on_attach = ...
+local unpack = table.unpack or unpack --For Lua 5.1 compatibility
 
 return {
   "neovim/nvim-lspconfig",
@@ -53,7 +54,7 @@ return {
         capabilities = capabilities,
         on_attach = on_attach,
         cmd = { "vscode-json-language-server", "--stdio" },
-        filetypes = { "json", "jsonc" },
+        filetypes = { "json", "jsonc", "json5" },
         single_file_support = true,
         root_dir = function(fname)
           return vim.fs.dirname(vim.fs.find(".git", { path = fname, upward = true })[1])
@@ -487,6 +488,22 @@ return {
             nimsuggestPath = vim.fn.expand("~/.nimble/bin/custom_lang_server_build"),
           },
         },
+      }),
+      lspconfig.qmlls.setup({
+        capabilities = capabilities,
+        on_attach = on_attach,
+        cmd = { "qml-language-server" },
+        filetypes = { "qml" },
+        root_dir = function(fname)
+          local root_patterns = { ".git", ".qml", "qmldir" }
+          for _, pattern in ipairs(root_patterns) do
+            local root = vim.fs.find(pattern, { path = fname, upward = true })[1]
+            if root then
+              return vim.fs.dirname(root)
+            end
+          end
+          return vim.fs.dirname(fname)
+        end,
       }),
     },
   },
