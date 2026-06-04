@@ -2,6 +2,14 @@ return {
   "brenton-leighton/multiple-cursors.nvim",
   version = false,
   lazy = true,
+  opts = {
+    pre_hook = function()
+      vim.g.minipairs_disable = true
+    end,
+    post_hook = function()
+      vim.g.minipairs_disable = false
+    end,
+  },
   config = function(_, opts)
     vim.api.nvim_set_hl(0, "MultipleCursorsCursor", { bg = "#7dcfff", fg = "#000000" })
     vim.api.nvim_set_hl(0, "MultipleCursorsLockedCursor", { bg = "#faba47", fg = "#000000" })
@@ -15,13 +23,14 @@ return {
     { "<C-Down>", "<Cmd>MultipleCursorsAddDown<CR>", mode = { "n", "i", "x" }, desc = "Add cursor and move down" },
     { "<C-Up>", "<Cmd>MultipleCursorsAddUp<CR>", mode = { "n", "i", "x" }, desc = "Add cursor and move up" },
     { "<C-LeftMouse>", "<Cmd>MultipleCursorsMouseAddDelete<CR>", mode = { "n", "i" }, desc = "Add or remove cursor" },
+    { "<C-Return>", "<Cmd>MultipleCursorsAddDelete<CR>", mode = { "n", "i" }, desc = "Add or remove cursor" },
     {
       "<leader>Mm",
       "<Cmd>MultipleCursorsAddVisualArea<CR>",
       mode = { "x" },
       desc = "Add cursors to the lines of the visual area",
     },
-    { "<leader>a", "<Cmd>MultipleCursorsAddMatches<CR>", mode = { "n", "x" }, desc = "Add cursors to cword" },
+    { "<leader>Ma", "<Cmd>MultipleCursorsAddMatches<CR>", mode = { "n", "x" }, desc = "Add cursors to cword" },
     {
       "<leader>MA",
       "<Cmd>MultipleCursorsAddMatchesV<CR>",
